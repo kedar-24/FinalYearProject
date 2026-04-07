@@ -167,22 +167,22 @@ with gr.Blocks(theme=theme, title=settings.APP_TITLE, css=CUSTOM_CSS) as demo:
     """)
 
     # ── Stats Row ──
-    gr.HTML("""
-    <div class="info-cards">
-        <div class="info-card">
-            <div class="metric">99.36%</div>
-            <div class="label">YOLOv11m mAP@50 (Detection)</div>
-        </div>
-        <div class="info-card">
-            <div class="metric">99.35%</div>
-            <div class="label">EfficientNet-B0 Accuracy (Classification)</div>
-        </div>
-        <div class="info-card">
-            <div class="metric">30 + 14</div>
-            <div class="label">Detection + Classification Classes</div>
-        </div>
-    </div>
-    """)
+    # gr.HTML("""
+    # <div class="info-cards">
+    #     <div class="info-card">
+    #         <div class="metric">99.36%</div>
+    #         <div class="label">YOLOv11m mAP@50 (Detection)</div>
+    #     </div>
+    #     <div class="info-card">
+    #         <div class="metric">99.35%</div>
+    #         <div class="label">EfficientNet-B0 Accuracy (Classification)</div>
+    #     </div>
+    #     <div class="info-card">
+    #         <div class="metric">30 + 14</div>
+    #         <div class="label">Detection + Classification Classes</div>
+    #     </div>
+    # </div>
+    # """)
 
     # ── Main Interface ──
     with gr.Row(equal_height=True):
