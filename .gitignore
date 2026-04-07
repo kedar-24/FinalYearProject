@@ -24,8 +24,8 @@ logs/
 *.log
 
 # Model weights (download from Kaggle, don't commit)
-models/*.pt
-models/*.pth
+# models/*.pt
+# models/*.pth
 
 # Dataset (too large for git)
 data/
