@@ -42,7 +42,10 @@ class FLEfficientNet(nn.Module):
         # Replace the final linear layer
         # EfficientNet uses 'classifier' as the head, which is Sequential with Dropout and Linear
         in_features = self.backbone.classifier[1].in_features
-        self.backbone.classifier[1] = nn.Linear(in_features, num_classes)
+        self.backbone.classifier[1] = nn.Sequential(
+            nn.Dropout(p=0.3, inplace=True),
+            nn.Linear(in_features, num_classes)
+        )
         
     def forward(self, x):
         return self.backbone(x)

@@ -35,11 +35,11 @@ def diagnosis_pipeline(image: np.ndarray):
         return None, {"Error": "No image provided."}
 
     try:
-        detection_img, classification_results = engine.predict(image)
-        return detection_img, classification_results
+        detection_img, classification_results, gradcam_img = engine.predict(image)
+        return detection_img, classification_results, gradcam_img
     except Exception as e:
         logger.error(f"Pipeline error: {e}")
-        return image, {"Error": str(e)}
+        return image, {"Error": str(e)}, None
 
 
 # ── Custom CSS for premium look ──
@@ -102,35 +102,6 @@ footer { display: none !important; }
     border-color: rgba(16, 185, 129, 0.3);
 }
 
-.info-cards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin: 1rem 0;
-}
-
-.info-card {
-    background: rgba(30, 41, 59, 0.6);
-    border: 1px solid rgba(148, 163, 184, 0.1);
-    border-radius: 12px;
-    padding: 1rem;
-    text-align: center;
-}
-
-.info-card .metric {
-    font-size: 1.5rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, #10b981, #3b82f6);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.info-card .label {
-    font-size: 0.78rem;
-    color: #64748b;
-    margin-top: 4px;
-}
-
 .app-footer {
     text-align: center;
     padding: 1rem;
@@ -162,24 +133,7 @@ with gr.Blocks(theme=theme, title=settings.APP_TITLE, css=CUSTOM_CSS) as demo:
         <div style="margin-top: 0.8rem;">
             <span class="model-badge badge-yolo">🎯 YOLOv11m — Detection</span>
             <span class="model-badge badge-effnet">🧠 EfficientNet-B0 — Classification</span>
-        </div>
-    </div>
-    """)
-
-    # ── Stats Row ──
-    gr.HTML("""
-    <div class="info-cards">
-        <div class="info-card">
-            <div class="metric">99.36%</div>
-            <div class="label">YOLOv11m mAP@50 (Detection)</div>
-        </div>
-        <div class="info-card">
-            <div class="metric">99.35%</div>
-            <div class="label">EfficientNet-B0 Accuracy (Classification)</div>
-        </div>
-        <div class="info-card">
-            <div class="metric">30 + 14</div>
-            <div class="label">Detection + Classification Classes</div>
+            <span class="model-badge" style="background: rgba(168, 85, 247, 0.1); color: #c084fc; border-color: rgba(168, 85, 247, 0.3);">🔮 Grad-CAM — Explainability</span>
         </div>
     </div>
     """)
@@ -223,11 +177,16 @@ with gr.Blocks(theme=theme, title=settings.APP_TITLE, css=CUSTOM_CSS) as demo:
                         num_top_classes=5,
                         label="Disease Probability Distribution",
                     )
+                with gr.TabItem("🔮 Explainability (Grad-CAM)"):
+                    output_gradcam = gr.Image(
+                        label="Grad-CAM Heatmap (Focus regions for the predicted class)",
+                        height=420,
+                    )
 
     submit_btn.click(
         fn=diagnosis_pipeline,
         inputs=input_image,
-        outputs=[output_detect, output_class],
+        outputs=[output_detect, output_class, output_gradcam],
     )
 
     # ── Footer ──

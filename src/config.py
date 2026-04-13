@@ -24,28 +24,28 @@ class Settings(BaseSettings):
     INPUT_SIZE: int = 224
     CONFIDENCE_THRESHOLD: float = 0.25
 
-    # ── EfficientNet Classification Classes (14) ──
-    # Removed Cassava temporarily because the Kaggle checkpoint only has 14 classes.
+    # ── EfficientNet Classification Classes (17) ──
     CLASS_NAMES: List[str] = [
-        # Corn (4 classes)
-        'Corn_Cercospora_Leaf_Spot',
-        'Corn_Common_Rust',
-        'Corn_Healthy',
-        'Corn_Northern_Leaf_Blight',
-        # Tomato (10 classes)
-        'Tomato_Bacterial_Spot',
-        'Tomato_Early_Blight',
+        'Cassava_Bacterial_Blight',
+        'Cassava_Brown_Spot',
+        'Cassava_Green_Mite',
+        'Cassava_Healthy',
+        'Cassava_Mosaic',
+        'Maize_Fall_Armyworm',
+        'Maize_Grasshoper',
+        'Maize_Healthy',
+        'Maize_Leaf_Beetle',
+        'Maize_Leaf_Blight',
+        'Maize_Leaf_Spot',
+        'Maize_Streak_Virus',
         'Tomato_Healthy',
-        'Tomato_Late_Blight',
-        'Tomato_Leaf_Mold',
-        'Tomato_Mosaic_Virus',
+        'Tomato_Leaf_Blight',
+        'Tomato_Leaf_Curl',
         'Tomato_Septoria_Leaf_Spot',
-        'Tomato_Spider_Mites',
-        'Tomato_Target_Spot',
-        'Tomato_Yellow_Leaf_Curl_Virus',
+        'Tomato_Verticulium_Wilt',
     ]
 
-    NUM_CLASSES: int = 14
+    NUM_CLASSES: int = 17
 
 
 # Global settings instance
