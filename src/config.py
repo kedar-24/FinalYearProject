@@ -15,10 +15,10 @@ class Settings(BaseSettings):
     DEBUG: bool = False
     PORT: int = 7860
 
-    # Model Paths — Updated for YOLO11m
+    # Model Paths — Updated for YOLOv8m
     EFFICIENTNET_PATH: str = os.getenv("EFFICIENTNET_PATH", "models/best_efficientnet.pth")
-    YOLO_PATH: str = os.getenv("YOLO_PATH", "models/best_yolo11m.pt")
-    YOLO_FALLBACK_MODEL: str = "yolo11m.pt"
+    YOLO_PATH: str = os.getenv("YOLO_PATH", "models/best_yolo8m.pt")
+    YOLO_FALLBACK_MODEL: str = "yolov8m.pt"
 
     # Inference Settings
     INPUT_SIZE: int = 224

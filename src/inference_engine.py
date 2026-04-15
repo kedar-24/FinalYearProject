@@ -16,7 +16,7 @@ class DiseaseInferenceEngine:
     """
     Two-Track Crop Disease Diagnosis Pipeline.
 
-    Track A — Detection (YOLOv11m, 30 FieldPlant classes):
+    Track A — Detection (YOLOv8m, 30 FieldPlant classes):
         Locates diseased regions in field images → bounding boxes + per-box labels.
 
     Track B — Classification (EfficientNet-B0, 17 classes):

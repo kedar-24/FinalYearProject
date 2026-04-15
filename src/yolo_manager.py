@@ -4,9 +4,9 @@ from .logger import logger
 
 class YOLOManager:
     """
-    Manages YOLOv11m training and inference with robust logging.
+    Manages YOLOv8m training and inference with robust logging.
     """
-    def __init__(self, model_path: str = 'yolo11m.pt'):
+    def __init__(self, model_path: str = 'yolov8m.pt'):
         try:
             self.model = YOLO(model_path)
             logger.info(f"YOLO model loaded from {model_path}")
@@ -25,7 +25,7 @@ class YOLOManager:
                 epochs=epochs,
                 imgsz=imgsz,
                 device=device,
-                name='yolo11m_plant_disease',
+                name='yolov8m_plant_disease',
                 verbose=True
             )
             logger.info("YOLO training completed successfully.")

@@ -4,7 +4,6 @@ import os
 import sys
 from pathlib import Path
 
-# Ensure project root is in path since frontend/ is isolated
 PROJECT_ROOT = str(Path(__file__).parent.parent)
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
@@ -14,7 +13,6 @@ from src.config import settings
 from src.logger import logger
 
 
-# ── Initialize Inference Engine ──
 engine = None
 try:
     engine = DiseaseInferenceEngine()
@@ -24,16 +22,10 @@ except Exception as e:
 
 
 def diagnosis_pipeline(image: np.ndarray):
-    """
-    Gradio callback: runs image through YOLOv11m detection + EfficientNet-B0 classification.
-    Returns annotated image and classification probabilities.
-    """
     if engine is None:
-        return None, {"Error": "System initialization failed. Check logs."}
-
+        return None, {"Error": "System initialization failed. Check logs."}, None
     if image is None:
-        return None, {"Error": "No image provided."}
-
+        return None, {"Error": "No image provided."}, None
     try:
         detection_img, classification_results, gradcam_img = engine.predict(image)
         return detection_img, classification_results, gradcam_img
@@ -42,118 +34,173 @@ def diagnosis_pipeline(image: np.ndarray):
         return image, {"Error": str(e)}, None
 
 
-# ── Custom CSS for premium look ──
-CUSTOM_CSS = """
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+CSS = """
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-* { font-family: 'Inter', sans-serif !important; }
+* {
+    font-family: 'Inter', sans-serif !important;
+    box-sizing: border-box;
+}
+
+body, .gradio-container {
+    background: #f8fafc !important;
+    min-height: 100vh;
+}
 
 .gradio-container {
-    max-width: 1280px !important;
-    margin: auto !important;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%) !important;
+    max-width: 1100px !important;
+    margin: 0 auto !important;
+    padding: 2rem 1.5rem !important;
 }
 
 footer { display: none !important; }
 
-.app-header {
+/* ── Header ── */
+.header-wrap {
     text-align: center;
-    padding: 2rem 1rem 1rem;
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(59, 130, 246, 0.06));
-    border-radius: 16px;
-    border: 1px solid rgba(16, 185, 129, 0.15);
-    margin-bottom: 1.5rem;
+    padding: 2.5rem 1rem 2rem;
+    margin-bottom: 2rem;
 }
 
-.app-header h1 {
-    background: linear-gradient(135deg, #10b981, #3b82f6);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-size: 2.2rem !important;
-    font-weight: 700 !important;
-    margin-bottom: 0.3rem !important;
+.header-wrap h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 0.5rem;
+    letter-spacing: -0.02em;
 }
 
-.app-header p {
-    color: #94a3b8 !important;
-    font-size: 0.95rem !important;
-    line-height: 1.6 !important;
+.header-wrap p {
+    font-size: 1rem;
+    color: #64748b;
+    margin: 0 auto;
+    max-width: 520px;
+    line-height: 1.6;
 }
 
-.model-badge {
-    display: inline-block;
-    padding: 3px 10px;
+.pill-row {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.85rem;
     border-radius: 999px;
-    font-size: 0.75rem;
+    font-size: 0.78rem;
     font-weight: 600;
-    margin: 2px 4px;
-    border: 1px solid;
+    border: 1px solid transparent;
 }
 
-.badge-yolo {
-    background: rgba(59, 130, 246, 0.1);
-    color: #60a5fa;
-    border-color: rgba(59, 130, 246, 0.3);
+.pill-blue  { background: #eff6ff; color: #3b82f6; border-color: #bfdbfe; }
+.pill-green { background: #f0fdf4; color: #16a34a; border-color: #bbf7d0; }
+.pill-purple{ background: #faf5ff; color: #9333ea; border-color: #e9d5ff; }
+
+/* ── Cards ── */
+.card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
 }
 
-.badge-effnet {
-    background: rgba(16, 185, 129, 0.1);
-    color: #34d399;
-    border-color: rgba(16, 185, 129, 0.3);
+/* ── Upload zone overrides ── */
+.upload-card { padding: 1.25rem; }
+
+/* ── Analyze button ── */
+.analyze-btn {
+    width: 100% !important;
+    margin-top: 0.85rem !important;
+    height: 48px !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    border-radius: 10px !important;
+    background: #10b981 !important;
+    border: none !important;
+    color: #fff !important;
+    cursor: pointer;
+    transition: background 0.18s;
 }
 
-.app-footer {
+.analyze-btn:hover { background: #059669 !important; }
+
+/* ── Section label ── */
+.section-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #94a3b8;
+    margin-bottom: 0.6rem;
+}
+
+/* ── Results tabs override ── */
+.tab-nav button {
+    font-size: 0.88rem !important;
+    font-weight: 500 !important;
+    color: #64748b !important;
+}
+
+.tab-nav button.selected {
+    color: #0f172a !important;
+    border-bottom: 2px solid #10b981 !important;
+}
+
+/* ── Footer ── */
+.footer-wrap {
     text-align: center;
-    padding: 1rem;
-    color: #475569;
+    margin-top: 2.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid #e2e8f0;
     font-size: 0.8rem;
-    border-top: 1px solid rgba(148, 163, 184, 0.1);
-    margin-top: 1rem;
+    color: #94a3b8;
 }
+
+.footer-wrap strong { color: #64748b; }
 """
 
-# ── Gradio UI ──
-theme = gr.themes.Soft(
-    primary_hue="emerald",
-    secondary_hue="blue",
-    neutral_hue="slate",
-    font=gr.themes.GoogleFont("Inter"),
-)
-
-with gr.Blocks(theme=theme, title=settings.APP_TITLE, css=CUSTOM_CSS) as demo:
+with gr.Blocks(title=settings.APP_TITLE) as demo:
 
     # ── Header ──
     gr.HTML("""
-    <div class="app-header">
-        <h1>🌿 Crop Disease Diagnosis System</h1>
-        <p>
-            Upload a clear image of a crop leaf. Our two-stage deep learning pipeline will
-            <strong>detect</strong> diseased regions and <strong>classify</strong> the specific disease.
-        </p>
-        <div style="margin-top: 0.8rem;">
-            <span class="model-badge badge-yolo">🎯 YOLOv11m — Detection</span>
-            <span class="model-badge badge-effnet">🧠 EfficientNet-B0 — Classification</span>
-            <span class="model-badge" style="background: rgba(168, 85, 247, 0.1); color: #c084fc; border-color: rgba(168, 85, 247, 0.3);">🔮 Grad-CAM — Explainability</span>
+    <div class="header-wrap">
+        <h1>Crop Disease Diagnosis</h1>
+        <p>Upload a leaf image. Our AI pipeline detects diseased regions, classifies the disease, and highlights the decision area.</p>
+        <div class="pill-row">
+            <span class="pill pill-blue">YOLOv8m &mdash; Detection</span>
+            <span class="pill pill-green">EfficientNet-B0 &mdash; Classification</span>
+            <span class="pill pill-purple">Grad-CAM &mdash; Explainability</span>
         </div>
     </div>
     """)
 
-    # ── Main Interface ──
-    with gr.Row(equal_height=True):
-        with gr.Column(scale=1):
-            input_image = gr.Image(
-                label="📸 Upload or Capture Leaf Image",
-                type="numpy",
-                height=420,
-                sources=["upload", "webcam", "clipboard"],
-            )
-            submit_btn = gr.Button(
-                "🔬 Analyze Leaf",
-                variant="primary",
-                size="lg",
-            )
+    # ── Main layout ──
+    with gr.Row(equal_height=False):
 
-            # Show example images if available
+        # Left — upload
+        with gr.Column(scale=4, min_width=300):
+            with gr.Group(elem_classes="card upload-card"):
+                gr.HTML('<div class="section-label">Input</div>')
+                input_image = gr.Image(
+                    label="",
+                    type="numpy",
+                    height=360,
+                    sources=["upload", "webcam", "clipboard"],
+                    show_label=False,
+                )
+                submit_btn = gr.Button(
+                    "Analyze Leaf",
+                    variant="primary",
+                    elem_classes="analyze-btn",
+                )
+
+            # Example images
             example_dir = os.path.join(PROJECT_ROOT, "examples")
             example_files = []
             if os.path.exists(example_dir):
@@ -163,25 +210,35 @@ with gr.Blocks(theme=theme, title=settings.APP_TITLE, css=CUSTOM_CSS) as demo:
                     if f.lower().endswith((".jpg", ".jpeg", ".png"))
                 ])
             if example_files:
-                gr.Examples(examples=example_files, inputs=input_image, label="📂 Example Images")
+                gr.Examples(
+                    examples=example_files,
+                    inputs=input_image,
+                    label="Examples",
+                )
 
-        with gr.Column(scale=2):
-            with gr.Tabs():
-                with gr.TabItem("🎯 Detection (YOLOv11m)"):
-                    output_detect = gr.Image(
-                        label="YOLOv11m Object Detection — Diseased Region Localization",
-                        height=420,
-                    )
-                with gr.TabItem("📊 Classification (EfficientNet-B0)"):
-                    output_class = gr.Label(
-                        num_top_classes=5,
-                        label="Disease Probability Distribution",
-                    )
-                with gr.TabItem("🔮 Explainability (Grad-CAM)"):
-                    output_gradcam = gr.Image(
-                        label="Grad-CAM Heatmap (Focus regions for the predicted class)",
-                        height=420,
-                    )
+        # Right — results
+        with gr.Column(scale=6, min_width=400):
+            with gr.Group(elem_classes="card"):
+                gr.HTML('<div class="section-label">Results</div>')
+                with gr.Tabs():
+                    with gr.TabItem("Detection"):
+                        output_detect = gr.Image(
+                            label="",
+                            show_label=False,
+                            height=360,
+                        )
+                    with gr.TabItem("Classification"):
+                        output_class = gr.Label(
+                            num_top_classes=5,
+                            label="",
+                            show_label=False,
+                        )
+                    with gr.TabItem("Grad-CAM"):
+                        output_gradcam = gr.Image(
+                            label="",
+                            show_label=False,
+                            height=360,
+                        )
 
     submit_btn.click(
         fn=diagnosis_pipeline,
@@ -191,10 +248,9 @@ with gr.Blocks(theme=theme, title=settings.APP_TITLE, css=CUSTOM_CSS) as demo:
 
     # ── Footer ──
     gr.HTML("""
-    <div class="app-footer">
-        <strong>Crop Disease Diagnosis System</strong><br/>
-        Powered by <strong>YOLOv11m</strong> &amp; <strong>EfficientNet-B0</strong> ·
-        FieldPlant Dataset (30 classes) · © 2026
+    <div class="footer-wrap">
+        <strong>Crop Disease Diagnosis System</strong> &nbsp;&middot;&nbsp;
+        YOLOv8m &amp; EfficientNet-B0 &nbsp;&middot;&nbsp; 17 disease classes &nbsp;&middot;&nbsp; &copy; 2026
     </div>
     """)
 
@@ -203,4 +259,5 @@ if __name__ == "__main__":
         server_name="0.0.0.0",
         server_port=settings.PORT,
         share=False,
+        css=CSS,
     )
