@@ -173,7 +173,7 @@ with gr.Blocks(title=settings.APP_TITLE) as demo:
         <h1>Crop Disease Diagnosis</h1>
         <p>Upload a leaf image. Our AI pipeline detects diseased regions, classifies the disease, and highlights the decision area.</p>
         <div class="pill-row">
-            <span class="pill pill-blue">YOLOv8m &mdash; Detection</span>
+            <span class="pill pill-blue">YOLOv11m &mdash; Detection</span>
             <span class="pill pill-green">EfficientNet-B0 &mdash; Classification</span>
             <span class="pill pill-purple">Grad-CAM &mdash; Explainability</span>
         </div>
@@ -250,7 +250,7 @@ with gr.Blocks(title=settings.APP_TITLE) as demo:
     gr.HTML("""
     <div class="footer-wrap">
         <strong>Crop Disease Diagnosis System</strong> &nbsp;&middot;&nbsp;
-        YOLOv8m &amp; EfficientNet-B0 &nbsp;&middot;&nbsp; 17 disease classes &nbsp;&middot;&nbsp; &copy; 2026
+        YOLOv11m &amp; EfficientNet-B0 &nbsp;&middot;&nbsp; 17 disease classes &nbsp;&middot;&nbsp; &copy; 2026
     </div>
     """)
 
